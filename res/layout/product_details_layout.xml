@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+
+    <ScrollView
+        android:id="@+id/descriptionScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/detailsBottomLayout"
+        android:layout_alignParentTop="true" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/productDetailsName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dip"
+                android:shadowColor="#00ccff"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1.5"
+                android:textColor="#88ffff88"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ViewAnimator
+                android:id="@+id/productViewAnimator"
+                android:layout_width="200dip"
+                android:layout_height="200dip" />
+
+            <TextView
+                android:id="@+id/productDetailsDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:padding="10dip"
+                android:shadowColor="#00ccff"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1.5"
+                android:textColor="#88ff8888"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/productDetailsPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:padding="10dip"
+                android:shadowColor="#00ccff"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1.5"
+                android:textColor="#88ff8888"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/detailsBottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dip"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/productQuantityField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Quantity"
+            android:shadowColor="#00ccff"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:inputType="number"
+            android:shadowRadius="1.5"
+            android:textColor="#88ff88"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buyProductBtn"
+            style="@style/btnStyleWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Buy" />
+    </LinearLayout>
+
+</RelativeLayout>

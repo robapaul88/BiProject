@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center" >
+
+        <Spinner
+            android:id="@+id/productsSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/optionsRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="left" >
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Income" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Units" />
+
+        <RadioButton
+            android:id="@+id/radio2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sales" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/showStatisticsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_statistics_string" />
+
+</LinearLayout>

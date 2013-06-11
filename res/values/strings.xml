@@ -1,0 +1,54 @@
+<resources>
+
+    <string name="app_name">BiProject</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="add_values">Add values to the chart</string>
+    <string name="x">X</string>
+    <string name="y">Y</string>
+    <string name="add">Add</string>
+    <string name="new_series">New series</string>
+    <string name="contactTitle">Contact</string>
+    <string name="detailsTitle">Details</string>
+    <string name="productsTitle">Products</string>
+    <string name="statisticsTitle">Statistics</string>
+    <string name="phoneString">Phone</string>
+    <string name="smsString">SMS</string>
+    <string name="emailString">Email</string>
+    <string name="productsString">Products</string>
+    <string name="statisticsString">Statistics</string>
+    <string name="contactString">Contact</string>
+    <string name="dianasShopString">Diana\'s Shop</string>
+    <string name="show_statistics_string">Show statistics</string>
+    <string-array name="sampleProducts">
+        <item>Apples</item>
+        <item>Bananas </item>
+        <item>Oranges </item>
+        <item>Pineapple</item>
+        <item>Mango</item>
+        <item>Potatoes </item>
+        <item>Tomatoes </item>
+        <item>Onions</item>
+        <item>Lettuce</item>
+        <item>Rice</item>
+        <item>Pasta</item>
+        <item>Bread</item>
+        <item>Pizza</item>
+        <item>Beef Mince</item>
+        <item>Chicken Breast</item>
+        <item>Salmon Fillets</item>
+        <item>Pasta Sauce</item>
+        <item>Curry Sauce</item>
+        <item>Cheese</item>
+        <item>Butter</item>
+        <item>Plain Yoghurt</item>
+        <item>Drink</item>
+        <item>Milk</item>
+        <item>Fresh Orange Juice</item>
+        <item>Cola</item>
+        <item>Beer</item>
+        <item>Wine</item>
+        <item>All</item>
+    </string-array>
+
+</resources>

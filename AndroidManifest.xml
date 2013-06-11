@@ -1,0 +1,55 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="pack.bi"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application
+        android:name="BiProject"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".activities.SplashActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/title_activity_main" >
+        </activity>
+        <activity
+            android:name=".activities.ProductsActivity"
+            android:label="@string/productsTitle" >
+        </activity>
+        <activity
+            android:name=".activities.StatisticsActivity"
+            android:label="@string/statisticsTitle" >
+        </activity>
+        <activity
+            android:name=".activities.ContactActivity"
+            android:label="@string/contactTitle" >
+        </activity>
+        <activity
+            android:name=".activities.ProductDetailsActivity"
+            android:windowSoftInputMode="stateHidden" >
+            android:label="@string/detailsTitle" >
+        </activity>
+        <activity
+            android:name=".activities.OptionsActivity"
+            android:label="@string/detailsTitle" >
+        </activity>
+    </application>
+
+</manifest>
