@@ -105,7 +105,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void addSale(Sales sale) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_Sales_ID, sale.get_idSale());
         values.put(KEY_Sales_P_ID, sale.get_idProduct());
         values.put(KEY_Sales_Ammount, sale.get_amount());
         values.put(KEY_Sales_Date, sale.get_date());
@@ -161,8 +160,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Sales> salesList = new ArrayList<Sales>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_SALES, new String[] { KEY_Sales_ID, KEY_Sales_P_ID, KEY_Sales_Ammount, KEY_Sales_Date }, KEY_Sales_P_ID
-                        + "=?", new String[] { String.valueOf(idProduct) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_SALES, new String[] { KEY_Sales_ID, KEY_Sales_P_ID, KEY_Sales_Ammount, KEY_Sales_Date },
+                        KEY_Sales_P_ID + "=?", new String[] { String.valueOf(idProduct) }, null, null, null, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
@@ -171,7 +170,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 sale.set_idProduct(cursor.getInt(1));
                 sale.set_amount(cursor.getInt(2));
                 sale.set_date(cursor.getString(3));
-
+                Log.d(DatabaseHandler.class.getSimpleName(), sale.toString());
                 // Adding sale to list
                 salesList.add(sale);
             } while (cursor.moveToNext());

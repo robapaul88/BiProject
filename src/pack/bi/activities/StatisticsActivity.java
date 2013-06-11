@@ -17,6 +17,7 @@ import pack.bi.utils.BiUtils;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
@@ -131,12 +132,16 @@ public class StatisticsActivity extends Activity {
             case CHARTS_BY_INCOME:
                 // statistici de incasari totale per categorii
                 allCategories = dbHandler.getAllCategories();
+                log("ByIncome", 0);
                 for (Category cat : allCategories) {
+                    log(cat.get_categoryName(), 3);
                     int sum = 0;
                     productsInCategory = dbHandler.getProductsByCategoryId(cat.get_idCategory());
                     for (Product p : productsInCategory) {
+                        log(p.get_name(), 6);
                         sales = dbHandler.getSalesByProductId(p.get_idProduct());
                         for (Sales sale : sales) {
+                            log(String.valueOf(sale.get_amount()), 9);
                             sum += sale.get_amount() * p.get_price();
                         }
                     }
@@ -148,12 +153,15 @@ public class StatisticsActivity extends Activity {
                 }
                 break;
             case CHARTS_BY_UNITS:
+                log("ByUnits", 0);
                 // statistici de vanzare per numar produse in categorie
                 for (Product p : productsInCategory) {
+                    log(p.get_name(), 3);
                     sales = dbHandler.getSalesByProductId(p.get_idProduct());
                     int sum = 0;
                     for (Sales sale : sales) {
                         sum += sale.get_amount();
+                        log(sale.get_amount() + " - sum:" + sum, 6);
                     }
                     mSeries.add(p.get_name(), sum);
                     sum = 0;
@@ -163,12 +171,15 @@ public class StatisticsActivity extends Activity {
                 }
                 break;
             case CHARTS_BY_SALES:
+                log("BySales", 0);
                 // statistici de incasari per produs in categorie
                 for (Product p : productsInCategory) {
+                    log(p.get_name() + "->" + p.get_idProduct(), 3);
                     sales = dbHandler.getSalesByProductId(p.get_idProduct());
                     int sum = 0;
                     for (Sales sale : sales) {
                         sum += sale.get_amount() * p.get_price();
+                        log(sale.get_amount() + " - sum:" + sum, 6);
                     }
                     mSeries.add(p.get_name(), sum);
                     sum = 0;
@@ -183,5 +194,18 @@ public class StatisticsActivity extends Activity {
                 finish();
                 break;
         }
+    }
+
+    /**
+     * Used for debugging, logs the required message
+     * @param s
+     * @param spaces
+     */
+    private void log(String s, int spaces) {
+        String tab = "";
+        for (int i = 0; i < spaces; i++) {
+            tab += " ";
+        }
+        Log.d(StatisticsActivity.class.getSimpleName(), tab + s);
     }
 }
