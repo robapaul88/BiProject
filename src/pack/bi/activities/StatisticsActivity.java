@@ -56,8 +56,21 @@ public class StatisticsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.xy_chart);
         selectedCategory = (Category) getIntent().getExtras().getSerializable(CATOGORY_KEY);
-        setTitle(selectedCategory.get_categoryName());
         chartsByType = getIntent().getExtras().getInt(CHART_BY_KEY);
+        switch (chartsByType) {
+            case CHARTS_BY_INCOME:
+                setTitle("All categories - by income");
+                break;
+            case CHARTS_BY_UNITS:
+                setTitle(selectedCategory.get_categoryName() + " - by units");
+                break;
+            case CHARTS_BY_SALES:
+                setTitle(selectedCategory.get_categoryName() + " - by sales");
+                break;
+            default:
+                // do nothing
+                break;
+        }
         dbHandler = new DatabaseHandler(this);
         productsInCategory = dbHandler.getProductsByCategoryId(selectedCategory.get_idCategory());
         drawGraph();
@@ -75,7 +88,6 @@ public class StatisticsActivity extends Activity {
                 public void onClick(View v) {
                     SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
                     if (seriesSelection == null) {
-                        Toast.makeText(StatisticsActivity.this, "No chart element was clicked", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(StatisticsActivity.this, String.valueOf(seriesSelection.getValue()), Toast.LENGTH_SHORT).show();
                     }
@@ -85,7 +97,6 @@ public class StatisticsActivity extends Activity {
                 public boolean onLongClick(View v) {
                     SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
                     if (seriesSelection == null) {
-                        Toast.makeText(StatisticsActivity.this, "No chart element was long pressed", Toast.LENGTH_SHORT).show();
                         return false; // no chart element was long pressed, so
                                       // let something
                         // else handle the event
@@ -145,7 +156,7 @@ public class StatisticsActivity extends Activity {
                             sum += sale.get_amount() * p.get_price();
                         }
                     }
-                    mSeries.add(cat.get_categoryName(), sum);
+                    mSeries.add(cat.get_categoryName() + " - " + sum + " E", sum);
                     sum = 0;
                     SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
                     renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
@@ -163,7 +174,7 @@ public class StatisticsActivity extends Activity {
                         sum += sale.get_amount();
                         log(sale.get_amount() + " - sum:" + sum, 6);
                     }
-                    mSeries.add(p.get_name(), sum);
+                    mSeries.add(p.get_name() + " - " + sum + " U", sum);
                     sum = 0;
                     SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
                     renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
@@ -181,7 +192,7 @@ public class StatisticsActivity extends Activity {
                         sum += sale.get_amount() * p.get_price();
                         log(sale.get_amount() + " - sum:" + sum, 6);
                     }
-                    mSeries.add(p.get_name(), sum);
+                    mSeries.add(p.get_name() + " - " + sum + " E", sum);
                     sum = 0;
                     SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
                     renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
@@ -198,6 +209,7 @@ public class StatisticsActivity extends Activity {
 
     /**
      * Used for debugging, logs the required message
+     *
      * @param s
      * @param spaces
      */
