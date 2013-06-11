@@ -64,10 +64,25 @@ public class OptionsActivity extends Activity implements OnClickListener, OnItem
             case R.id.showStatisticsBtn:
                 Intent intent = new Intent(new Intent(OptionsActivity.this, StatisticsActivity.class));
                 intent.putExtra(StatisticsActivity.CATOGORY_KEY, categories.get(productsSpinner.getSelectedItemPosition()));
+                intent.putExtra(StatisticsActivity.CHART_BY_KEY, getSelectedRadio());
                 startActivity(intent);
                 break;
             default:
                 break;
+        }
+    }
+
+    private int getSelectedRadio() {
+        int selectedRadioId = optionsRadio.getCheckedRadioButtonId();
+        switch (selectedRadioId) {
+            case R.id.radio0:
+                return StatisticsActivity.CHARTS_BY_INCOME;
+            case R.id.radio1:
+                return StatisticsActivity.CHARTS_BY_UNITS;
+            case R.id.radio2:
+                return StatisticsActivity.CHARTS_BY_SALES;
+            default:
+                return StatisticsActivity.CHARTS_BY_INCOME;
         }
     }
 

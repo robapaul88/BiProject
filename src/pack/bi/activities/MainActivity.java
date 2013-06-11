@@ -14,7 +14,6 @@ import android.widget.Button;
 public class MainActivity extends Activity implements OnClickListener {
 
     Button products, statistics, contact;
-    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +30,6 @@ public class MainActivity extends Activity implements OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        progress = ProgressDialog.show(this, "DB Initialization", "First time only!", false, true);
-        BiUtils.initializeDatabase(this);
-        progress.dismiss();
     }
 
     @Override

@@ -157,6 +157,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return productsList;
     }
 
+    public List<Sales> getSalesByProductId(int idProduct) {
+        List<Sales> salesList = new ArrayList<Sales>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_SALES, new String[] { KEY_Sales_ID, KEY_Sales_P_ID, KEY_Sales_Ammount, KEY_Sales_Date }, KEY_Sales_P_ID
+                        + "=?", new String[] { String.valueOf(idProduct) }, null, null, null, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Sales sale = new Sales();
+                sale.set_idSale(cursor.getInt(0));
+                sale.set_idProduct(cursor.getInt(1));
+                sale.set_amount(cursor.getInt(2));
+                sale.set_date(cursor.getString(3));
+
+                // Adding sale to list
+                salesList.add(sale);
+            } while (cursor.moveToNext());
+        }
+
+        return salesList;
+    }
+
     // Getting All Products
     public List<Product> getAllProducts() {
 
@@ -270,5 +293,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(TABLE_PRODUCTS, KEY_Product_ID + " = ?", new String[] { String.valueOf(product.get_idProduct()) });
         db.close();
     }
-
 }

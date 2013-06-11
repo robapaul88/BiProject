@@ -10,7 +10,9 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import pack.bi.R;
 import pack.bi.model.Category;
 import pack.bi.model.Product;
+import pack.bi.model.Sales;
 import pack.bi.storage.DatabaseHandler;
+import pack.bi.utils.BiUtils;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -26,6 +28,11 @@ public class StatisticsActivity extends Activity {
     public static final String TYPE = "type";
 
     public static final String CATOGORY_KEY = "selected_category_key";
+    public static final String CHART_BY_KEY = "chart_by_key";
+
+    public static final int CHARTS_BY_INCOME = 0;
+    public static final int CHARTS_BY_UNITS = 1;
+    public static final int CHARTS_BY_SALES = 2;
 
     private static int[] COLORS = new int[] { Color.GREEN, Color.BLUE, Color.MAGENTA, Color.CYAN, Color.YELLOW };
 
@@ -37,7 +44,63 @@ public class StatisticsActivity extends Activity {
 
     private GraphicalView mChartView;
     private Category selectedCategory;
+    private int chartsByType = CHARTS_BY_INCOME;// default value
     List<Product> productsInCategory;
+    List<Category> allCategories;
+    List<Sales> sales;
+    DatabaseHandler dbHandler;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.xy_chart);
+        selectedCategory = (Category) getIntent().getExtras().getSerializable(CATOGORY_KEY);
+        setTitle(selectedCategory.get_categoryName());
+        chartsByType = getIntent().getExtras().getInt(CHART_BY_KEY);
+        dbHandler = new DatabaseHandler(this);
+        productsInCategory = dbHandler.getProductsByCategoryId(selectedCategory.get_idCategory());
+        drawGraph();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mChartView == null) {
+            LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
+            mChartView = ChartFactory.getPieChartView(this, mSeries, mRenderer);
+            mRenderer.setClickEnabled(true);
+            mRenderer.setSelectableBuffer(10);
+            mChartView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
+                    if (seriesSelection == null) {
+                        Toast.makeText(StatisticsActivity.this, "No chart element was clicked", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(StatisticsActivity.this, String.valueOf(seriesSelection.getValue()), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            mChartView.setOnLongClickListener(new View.OnLongClickListener() {
+                public boolean onLongClick(View v) {
+                    SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
+                    if (seriesSelection == null) {
+                        Toast.makeText(StatisticsActivity.this, "No chart element was long pressed", Toast.LENGTH_SHORT).show();
+                        return false; // no chart element was long pressed, so
+                                      // let something
+                        // else handle the event
+                    } else {
+                        Toast.makeText(StatisticsActivity.this, String.valueOf(seriesSelection.getValue()), Toast.LENGTH_SHORT).show();
+                        return true; // the element was long pressed - the event
+                                     // has been
+                        // handled
+                    }
+                }
+            });
+            layout.addView(mChartView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        } else {
+            mChartView.repaint();
+        }
+    }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedState) {
@@ -55,17 +118,6 @@ public class StatisticsActivity extends Activity {
         outState.putString("date_format", mDateFormat);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.xy_chart);
-        selectedCategory = (Category) getIntent().getExtras().getSerializable(CATOGORY_KEY);
-        setTitle(selectedCategory.get_categoryName());
-        DatabaseHandler handler = new DatabaseHandler(this);
-        productsInCategory = handler.getProductsByCategoryId(selectedCategory.get_idCategory());
-        drawGraph();
-    }
-
     private void drawGraph() {
         mRenderer.setApplyBackgroundColor(true);
         mRenderer.setBackgroundColor(Color.argb(100, 50, 50, 50));
@@ -75,56 +127,61 @@ public class StatisticsActivity extends Activity {
         mRenderer.setMargins(new int[] { 20, 30, 15, 0 });
         mRenderer.setZoomButtonsVisible(true);
         mRenderer.setStartAngle(90);
-        for (Product p : productsInCategory) {
-            mSeries.add(p.get_name(), p.get_price());
-            SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
-            renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
-            mRenderer.addSeriesRenderer(renderer);
-        }
-        if (mChartView != null) {
-            mChartView.repaint();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mChartView == null) {
-            LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
-            mChartView = ChartFactory.getPieChartView(this, mSeries, mRenderer);
-            mRenderer.setClickEnabled(true);
-            mRenderer.setSelectableBuffer(10);
-            mChartView.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
-                    if (seriesSelection == null) {
-                        Toast.makeText(StatisticsActivity.this, "No chart element was clicked", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(StatisticsActivity.this, productsInCategory.get(seriesSelection.getPointIndex()).get_name(),
-                                        Toast.LENGTH_SHORT).show();
+        switch (chartsByType) {
+            case CHARTS_BY_INCOME:
+                // statistici de incasari totale per categorii
+                allCategories = dbHandler.getAllCategories();
+                for (Category cat : allCategories) {
+                    int sum = 0;
+                    productsInCategory = dbHandler.getProductsByCategoryId(cat.get_idCategory());
+                    for (Product p : productsInCategory) {
+                        sales = dbHandler.getSalesByProductId(p.get_idProduct());
+                        for (Sales sale : sales) {
+                            sum += sale.get_amount() * p.get_price();
+                        }
                     }
+                    mSeries.add(cat.get_categoryName(), sum);
+                    sum = 0;
+                    SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
+                    renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
+                    mRenderer.addSeriesRenderer(renderer);
                 }
-            });
-            mChartView.setOnLongClickListener(new View.OnLongClickListener() {
-                public boolean onLongClick(View v) {
-                    SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
-                    if (seriesSelection == null) {
-                        Toast.makeText(StatisticsActivity.this, "No chart element was long pressed", Toast.LENGTH_SHORT).show();
-                        return false; // no chart element was long pressed, so
-                                      // let something
-                        // else handle the event
-                    } else {
-                        Toast.makeText(StatisticsActivity.this, productsInCategory.get(seriesSelection.getPointIndex()).get_name(),
-                                        Toast.LENGTH_SHORT).show();
-                        return true; // the element was long pressed - the event
-                                     // has been
-                        // handled
+                break;
+            case CHARTS_BY_UNITS:
+                // statistici de vanzare per numar produse in categorie
+                for (Product p : productsInCategory) {
+                    sales = dbHandler.getSalesByProductId(p.get_idProduct());
+                    int sum = 0;
+                    for (Sales sale : sales) {
+                        sum += sale.get_amount();
                     }
+                    mSeries.add(p.get_name(), sum);
+                    sum = 0;
+                    SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
+                    renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
+                    mRenderer.addSeriesRenderer(renderer);
                 }
-            });
-            layout.addView(mChartView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        } else {
-            mChartView.repaint();
+                break;
+            case CHARTS_BY_SALES:
+                // statistici de incasari per produs in categorie
+                for (Product p : productsInCategory) {
+                    sales = dbHandler.getSalesByProductId(p.get_idProduct());
+                    int sum = 0;
+                    for (Sales sale : sales) {
+                        sum += sale.get_amount() * p.get_price();
+                    }
+                    mSeries.add(p.get_name(), sum);
+                    sum = 0;
+                    SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
+                    renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
+                    mRenderer.addSeriesRenderer(renderer);
+                }
+                break;
+            default:
+                // this shouldn't happen, but just in case finish this activity if it does
+                BiUtils.showAlert("There was an error! Sorry. Please try again!", StatisticsActivity.this);
+                finish();
+                break;
         }
     }
 }

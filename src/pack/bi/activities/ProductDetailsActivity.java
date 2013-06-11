@@ -76,9 +76,9 @@ public class ProductDetailsActivity extends Activity implements ResultsListener 
         DatabaseHandler handler = new DatabaseHandler(ProductDetailsActivity.this);
         String date = DateFormat.format(BiUtils.BI_DATE_FORMAT, Calendar.getInstance(Locale.getDefault())).toString();
         handler.addSale(new Sales(selectedProduct.get_idProduct(), quantity, date));
-        Toast.makeText(ProductDetailsActivity.this,
-                        "You have purchased " + quantity + " " + selectedProduct.get_name() + "s for " + (quantity * selectedProduct.get_price())
-                                        + " Euro !", Toast.LENGTH_LONG).show();
+        BiUtils.showAlert("You have purchased " + quantity + " "
+                        + (selectedProduct.get_name().endsWith("s") ? selectedProduct.get_name() : (selectedProduct.get_name() + "s")) + " for "
+                        + (quantity * selectedProduct.get_price()) + " Euro !", this);
     }
 
     @Override
